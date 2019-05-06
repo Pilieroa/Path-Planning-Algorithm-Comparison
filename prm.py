@@ -419,17 +419,21 @@ def main():
     ox = []
     oy = []
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(30, 30, [70, 70], "openRectangle")
+    ox, oy = obs.makeShape(30, 30, [70, 70], "rectangle")
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(40, 53, [24, 13], "openRectangle")
+    ox, oy = obs.makeShape(30, 30, [20, 20], "rectangle")
     obs = Obstacle(ox, oy)
     ox, oy = obs.makeShape(45, 50, [20, 15], "openRectangle")
     obs = Obstacle(ox, oy)
     ox, oy = obs.makeShape(50, 50, [10, 10], "openRectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(20, 53, [10, 10], "rectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(50, 10, [15, 17], "rectangle")
     obstacle_list_x.append(ox)
     obstacle_list_y.append(oy)
-    for i in range(len(obstacle_list_x)):
-        prm(obstacle_list_x[i], obstacle_list_y[i])
+    for i in range(1, len(obstacle_list_x)):
+        prm(obstacle_list_x[-i], obstacle_list_y[-i])
 
 
 if __name__ == '__main__':
