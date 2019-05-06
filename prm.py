@@ -259,7 +259,63 @@ def sample_points(sx, sy, gx, gy, rr, ox, oy, obkdtree):
     return sample_x, sample_y
 
 
-def main():
+class Obstacle:
+    ox = []
+    oy = []
+    x = 0
+    y = 0
+    data = []
+    shape = ""
+
+    def __init__(self, ox, oy):
+        self.ox = ox
+        self.oy = oy
+
+    def makeShape(self, x, y, data, shape):
+        self.x = x
+        self.y = y
+        self.data = data
+        self.shape = shape
+
+        if self.shape == "rectangle":
+            ox, oy = self.makeRectangle()
+        if self.shape == "openRectangle":
+            ox, oy = self.makeOpenRectangle()
+        return ox, oy
+
+    def makeRectangle(self):
+        for i in range(self.x-self.data[0]//2, (self.x+self.data[0]//2)+1):
+            self.ox.append(i)
+            self.oy.append(self.y - self.data[1]//2)
+        for i in range(self.x-self.data[0]//2, (self.x + self.data[0]//2)+1):
+            self.ox.append(i)
+            self.oy.append(self.y + self.data[1]//2)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x - self.data[0]//2)
+            self.oy.append(i)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x + self.data[0]//2)
+            self.oy.append(i)
+        return self.ox, self.oy
+
+    def makeOpenRectangle(self):
+        for i in range(self.x-self.data[0]//2, (self.x+self.data[0]//2)+1):
+            if i not in range(self.x-1, self.x+2):
+                self.ox.append(i)
+                self.oy.append(self.y - self.data[1]//2)
+        for i in range(self.x-self.data[0]//2, (self.x + self.data[0]//2)+1):
+            self.ox.append(i)
+            self.oy.append(self.y + self.data[1]//2)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x - self.data[0]//2)
+            self.oy.append(i)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x + self.data[0]//2)
+            self.oy.append(i)
+        return self.ox, self.oy
+
+
+def prm(ox, oy):
     print(__file__ + " start!!")
 
     # start and goal position
@@ -267,15 +323,32 @@ def main():
     sy = 10.0  # [m]
     gx = 50.0  # [m]
     gy = 50.0  # [m]
-    robot_size = 5.0  # [m]
+    robot_size = 1.0  # [m]
+    if show_animation:
+        plt.plot(ox, oy, ".k")
+    plt.plot(sx, sy, "^r")
+    plt.plot(gx, gy, "^c")
+    plt.grid(True)
+    plt.axis("equal")
 
+    rx, ry = PRM_planning(sx, sy, gx, gy, ox, oy, robot_size)
+
+    assert rx, 'Cannot found path'
+
+    if show_animation:
+        plt.plot(rx, ry, "-r")
+        plt.show()
+
+
+def main():
     ox = []
     oy = []
-
-    for i in range(60):
+    obstacle_list_x = []
+    obstacle_list_y = []
+    for i in range(50):
         ox.append(i)
         oy.append(0.0)
-    for i in range(60):
+    for i in range(30):
         ox.append(60.0)
         oy.append(i)
     for i in range(61):
@@ -290,21 +363,73 @@ def main():
     for i in range(40):
         ox.append(40.0)
         oy.append(60.0 - i)
+    obstacle_list_x.append(ox)
+    obstacle_list_y.append(oy)
 
-    if show_animation:
-        plt.plot(ox, oy, ".k")
-        plt.plot(sx, sy, "^r")
-        plt.plot(gx, gy, "^c")
-        plt.grid(True)
-        plt.axis("equal")
+    ox = []
+    oy = []
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 30, [60, 60], "rectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 40, [30, 25], "rectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 10, [10, 10], "rectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(50, 20, [10, 10], "rectangle")
+    obstacle_list_x.append(ox)
+    obstacle_list_y.append(oy)
 
-    rx, ry = PRM_planning(sx, sy, gx, gy, ox, oy, robot_size)
-
-    assert rx, 'Cannot found path'
-
-    if show_animation:
-        plt.plot(rx, ry, "-r")
-        plt.show()
+    ox = []
+    oy = []
+    for i in range(60):
+        ox.append(i)
+        oy.append(0.0)
+    for i in range(30):
+        ox.append(60.0)
+        oy.append(i)
+    for i in range(30, 60):
+        ox.append(10)
+        oy.append(i)
+    for i in range(5, 60):
+        ox.append(30)
+        oy.append(i)
+    for i in range(0, 2):
+        ox.append(40)
+        oy.append(i)
+    for i in range(0, 40):
+        ox.append(45)
+        oy.append(i)
+    for i in range(10, 60):
+        ox.append(48)
+        oy.append(i)
+    for i in range(61):
+        ox.append(i)
+        oy.append(60.0)
+    for i in range(61):
+        ox.append(0.0)
+        oy.append(i)
+    for i in range(40):
+        ox.append(20.0)
+        oy.append(i)
+    for i in range(40):
+        ox.append(40.0)
+        oy.append(60.0 - i)
+    obstacle_list_x.append(ox)
+    obstacle_list_y.append(oy)
+    ox = []
+    oy = []
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 30, [70, 70], "openRectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(40, 53, [24, 13], "openRectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(45, 50, [20, 15], "openRectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(50, 50, [10, 10], "openRectangle")
+    obstacle_list_x.append(ox)
+    obstacle_list_y.append(oy)
+    for i in range(len(obstacle_list_x)):
+        prm(obstacle_list_x[i], obstacle_list_y[i])
 
 
 if __name__ == '__main__':
