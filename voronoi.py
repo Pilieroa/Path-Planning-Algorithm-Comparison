@@ -7,6 +7,7 @@ import math
 import numpy as np
 import scipy.spatial
 import matplotlib.pyplot as plt
+from itertools import product
 
 # parameter
 N_KNN = 10  # number of edge from one sampled point
@@ -248,6 +249,46 @@ def sample_points(sx, sy, gx, gy, rr, ox, oy, obkdtree):
     return sample_x, sample_y
 
 
+class Obstacle:
+    ox = []
+    oy = []
+    x = 0
+    y = 0
+    data = []
+    shape = ""
+
+    def __init__(self, ox, oy):
+        self.ox = ox
+        self.oy = oy
+
+    def makeShape(self, x, y, data, shape):
+        self.x = x
+        self.y = y
+        self.data = data
+        self.shape = shape
+
+        if self.shape == "rectangle":
+            ox, oy = self.makeRectangle()
+        if self.shape == "circle":
+            ox, oy = self.makeCircle()
+        return ox, oy
+
+    def makeRectangle(self):
+        for i in range(self.x-self.data[0]//2, (self.x+self.data[0]//2)+1):
+            self.ox.append(i)
+            self.oy.append(self.y - self.data[1]//2)
+        for i in range(self.x-self.data[0]//2, (self.x + self.data[0]//2)+1):
+            self.ox.append(i)
+            self.oy.append(self.y + self.data[1]//2)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x - self.data[0]//2)
+            self.oy.append(i)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x + self.data[0]//2)
+            self.oy.append(i)
+        return self.ox, self.oy
+
+
 def main():
     print(__file__ + " start!!")
 
@@ -256,29 +297,35 @@ def main():
     sy = 10.0  # [m]
     gx = 50.0  # [m]
     gy = 50.0  # [m]
-    robot_size = 5.0  # [m]
+    robot_size = 1.0  # [m]
 
     ox = []
     oy = []
-    for i in range(50):
-        ox.append(i)
-        oy.append(0.0)
-    for i in range(30):
-        ox.append(60.0)
-        oy.append(i)
-    for i in range(61):
-        ox.append(i)
-        oy.append(60.0)
-    for i in range(61):
-        ox.append(0.0)
-        oy.append(i)
-    for i in range(40):
-        ox.append(20.0)
-        oy.append(i)
-    for i in range(40):
-        ox.append(40.0)
-        oy.append(60.0 - i)
+    # for i in range(50):
+    #     ox.append(i)
+    #     oy.append(0.0)
+    # for i in range(30):
+    #     ox.append(60.0)
+    #     oy.append(i)
+    # for i in range(61):
+    #     ox.append(i)
+    #     oy.append(60.0)
+    # for i in range(61):
+    #     ox.append(0.0)
+    #     oy.append(i)
+    # for i in range(40):
+    #     ox.append(20.0)
+    #     oy.append(i)
+    # for i in range(40):
+    #     ox.append(40.0)
+    #     oy.append(60.0 - i)
 
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 30, [60, 60], "rectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 40, [30, 25], "rectangle")
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(30, 10, [10, 10], "rectangle")
     if show_animation:  # pragma: no cover
         plt.plot(ox, oy, ".k")
         plt.plot(sx, sy, "^r")
