@@ -1,7 +1,5 @@
 """
-Path Planning Sample Code with Randamized Rapidly-Exploring Random Trees (RRT)
-
-author: AtsushiSakai(@Atsushi_twi)
+Path Planning with Randamized Rapidly-Exploring Random Trees (RRT)
 
 """
 
@@ -123,12 +121,14 @@ class RRT():
 
     def __CollisionCheck(self, node, obstacleList):
 
-        for (ox, oy, size) in obstacleList:
-            dx = ox - node.x
-            dy = oy - node.y
-            d = math.sqrt(dx * dx + dy * dy)
-            if d <= size:
-                return False  # collision
+        for obstacle in obstacleList:
+            if obstacle.type == 'circle'
+
+                dx = obstacle.x - node.x
+                dy = obstacle.y - node.y
+                d = math.sqrt(dx * dx + dy * dy)
+                if d <= obstacle.size:
+                    return False  # collision
 
         return True  # safe
 
@@ -142,6 +142,19 @@ class Node():
         self.x = x
         self.y = y
         self.parent = None
+
+
+class Obstacle():
+    """
+    Obstacles in the map
+
+    """
+
+    def __init__(self, x, y, shape, type):
+        self.x = x
+        self.y = y
+        self.shape = shape
+        self.type = type
 
 
 def main(gx=5.0, gy=10.0):
