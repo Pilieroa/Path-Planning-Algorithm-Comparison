@@ -1,6 +1,6 @@
 """
 Voronoi Road Map Planner
-author: Atsushi Sakai (@Atsushi_twi)
+
 """
 
 import math
