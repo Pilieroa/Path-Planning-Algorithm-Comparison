@@ -315,9 +315,9 @@ class Obstacle:
         return self.ox, self.oy
 
 
-def prm(ox, oy):
+def prm(ox, oy, num_samples):
     print(__file__ + " start!!")
-
+    N_SAMPLE = num_samples
     # start and goal position
     sx = 10.0  # [m]
     sy = 10.0  # [m]
@@ -333,12 +333,15 @@ def prm(ox, oy):
 
     rx, ry = PRM_planning(sx, sy, gx, gy, ox, oy, robot_size)
 
-    assert rx, 'Cannot found path'
 
     if show_animation:
         plt.plot(rx, ry, "-r")
         plt.show()
 
+    if rx == 'Cannot found path':
+        return rx
+    else:
+        return zip(rx, ry)
 
 def main():
     ox = []

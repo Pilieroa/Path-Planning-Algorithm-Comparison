@@ -321,11 +321,16 @@ def voronoi(ox, oy):
     rx, ry = VRM_planning(sx, sy, gx, gy, ox, oy, robot_size)
     elapsed_time = time.time() - start_time
     print(elapsed_time)
-    assert rx, 'Cannot found path'
+
 
     if show_animation:  # pragma: no cover
         plt.plot(rx, ry, "-r")
         plt.show()
+
+    if rx == 'Cannot found path':
+        return rx
+    else:
+        return zip(rx, ry)
 
 
 def main():
