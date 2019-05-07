@@ -268,6 +268,8 @@ class Obstacle:
             ox, oy = self.makeRectangle()
         if self.shape == "openRectangle":
             ox, oy = self.makeOpenRectangle()
+        if self.shape == "topOpenRectangle":
+            ox, oy = self.makeTopOpenRectangle()
         return ox, oy
 
     def makeRectangle(self):
@@ -287,12 +289,28 @@ class Obstacle:
 
     def makeOpenRectangle(self):
         for i in range(self.x-self.data[0]//2, (self.x+self.data[0]//2)+1):
-            if i not in range(self.x-1, self.x+2):
+            if i not in range(self.x-2, self.x+3):
                 self.ox.append(i)
                 self.oy.append(self.y - self.data[1]//2)
         for i in range(self.x-self.data[0]//2, (self.x + self.data[0]//2)+1):
             self.ox.append(i)
             self.oy.append(self.y + self.data[1]//2)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x - self.data[0]//2)
+            self.oy.append(i)
+        for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
+            self.ox.append(self.x + self.data[0]//2)
+            self.oy.append(i)
+        return self.ox, self.oy
+
+    def makeTopOpenRectangle(self):
+        for i in range(self.x-self.data[0]//2, (self.x+self.data[0]//2)+1):
+            self.ox.append(i)
+            self.oy.append(self.y - self.data[1]//2)
+        for i in range(self.x-self.data[0]//2, (self.x + self.data[0]//2)+1):
+            if i not in range(self.x-2, self.x+3):
+                self.ox.append(i)
+                self.oy.append(self.y + self.data[1]//2)
         for i in range(self.y - self.data[1]//2, (self.y+self.data[1]//2) + 1):
             self.ox.append(self.x - self.data[0]//2)
             self.oy.append(i)
@@ -341,6 +359,8 @@ def main():
     obstacle_list_y = []
     ox = []
     oy = []
+    obstacle_list_x = []
+    obstacle_list_y = []
     for i in range(50):
         ox.append(i)
         oy.append(0.0)
@@ -380,7 +400,7 @@ def main():
     for i in range(60):
         ox.append(i)
         oy.append(0.0)
-    for i in range(30):
+    for i in range(60):
         ox.append(60.0)
         oy.append(i)
     for i in range(30, 60):
@@ -410,26 +430,29 @@ def main():
     for i in range(40):
         ox.append(40.0)
         oy.append(60.0 - i)
+    obs = Obstacle(ox, oy)
+    ox, oy = obs.makeShape(50, 50, [4, 7], "topOpenRectangle")
     obstacle_list_x.append(ox)
     obstacle_list_y.append(oy)
+
     ox = []
     oy = []
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(30, 30, [70, 70], "rectangle")
+    ox, oy = obs.makeShape(30, 30, [60, 60], "rectangle")
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(30, 30, [20, 20], "rectangle")
+    ox, oy = obs.makeShape(20, 20, [15, 25], "rectangle")
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(45, 50, [20, 15], "openRectangle")
+    ox, oy = obs.makeShape(45, 50, [23, 13], "topOpenRectangle")
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(50, 50, [10, 10], "openRectangle")
+    ox, oy = obs.makeShape(50, 52, [7, 7], "openRectangle")
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(20, 53, [10, 10], "rectangle")
+    ox, oy = obs.makeShape(20, 53, [10, 10], "openRectangle")
     obs = Obstacle(ox, oy)
-    ox, oy = obs.makeShape(50, 10, [15, 17], "rectangle")
+    ox, oy = obs.makeShape(50, 10, [15, 17], "openRectangle")
     obstacle_list_x.append(ox)
     obstacle_list_y.append(oy)
-    for i in range(1, len(obstacle_list_x)):
-        voronoi(obstacle_list_x[-i], obstacle_list_y[-i])
+    for i in range(len(obstacle_list_x)):
+        voronoi(obstacle_list_x[i], obstacle_list_y[i])
 
 
 if __name__ == '__main__':
