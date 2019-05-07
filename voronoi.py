@@ -68,10 +68,9 @@ class KDTree:
 def VRM_planning(sx, sy, gx, gy, ox, oy, rr):
 
     obkdtree = KDTree(np.vstack((ox, oy)).T)
-    print(obkdtree)
     sample_x, sample_y = sample_points(sx, sy, gx, gy, rr, ox, oy, obkdtree)
     if show_animation:  # pragma: no cover
-        plt.plot(sample_x, sample_y, ".y")
+        plt.plot(sample_x, sample_y, ".c")
 
     road_map = generate_roadmap(sample_x, sample_y, rr, obkdtree)
 
@@ -176,7 +175,7 @@ def dijkstra_planning(sx, sy, gx, gy, ox, oy, rr, road_map, sample_x, sample_y):
         # show graph
         # COMMENT OUT FOR QUICK RUN
         if show_animation and len(closedset.keys()) % 2 == 0:  # pragma: no cover
-            plt.plot(current.x, current.y, "xg")
+            plt.plot(current.x, current.y, "xm")
             plt.pause(0.001)
 
         if c_id == (len(road_map) - 1):
@@ -227,8 +226,8 @@ def plot_road_map(road_map, sample_x, sample_y):  # pragma: no cover
         for ii in range(len(road_map[i])):
             ind = road_map[i][ii]
 
-            # plt.plot([sample_x[i], sample_x[ind]],
-            #          [sample_y[i], sample_y[ind]], "-k")
+            plt.plot([sample_x[i], sample_x[ind]],
+                     [sample_y[i], sample_y[ind]], "-k")
 
 
 def sample_points(sx, sy, gx, gy, rr, ox, oy, obkdtree):
@@ -330,16 +329,15 @@ def voronoi(ox, oy):
     gy = 50.0  # [m]
     robot_size = 1.0  # [m]
     if show_animation:  # pragma: no cover
-        plt.plot(ox, oy, ".k")
-        plt.plot(sx, sy, "^r")
-        plt.plot(gx, gy, "^c")
+        plt.plot(ox, oy, "sk")
+        plt.plot(sx, sy, "^g")
+        plt.plot(gx, gy, "^r")
         plt.grid(True)
         plt.axis("equal")
     start_time = time.time()
     rx, ry = VRM_planning(sx, sy, gx, gy, ox, oy, robot_size)
     elapsed_time = time.time() - start_time
     print(elapsed_time)
-
 
     if show_animation:  # pragma: no cover
         plt.plot(rx, ry, "-r")
@@ -348,7 +346,7 @@ def voronoi(ox, oy):
     if rx == 'Cannot found path':
         return rx
     else:
-        return zip(rx, ry)
+        return [rx, ry]
 
 
 def main():
