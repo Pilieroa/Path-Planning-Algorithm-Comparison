@@ -5,16 +5,17 @@ from prm import *
 from voronoi import *
 
 
-start = (0,0)
-goal = (0,0)
+start = (0, 0)
+goal = (0, 0)
 robot_size = 1
+
 
 def getPathLength(path):
     length = 0
     for i in range(1, len(path)):
         diff_x = path[i][0] - path[i-1][0]
         diff_y = path[i][1] - path[i-1][1]
-        length+= math.sqrt((diff_x**2)+(diff_y**2))
+        length += math.sqrt((diff_x**2)+(diff_y**2))
     return length
 
 
