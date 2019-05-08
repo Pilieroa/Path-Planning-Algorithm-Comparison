@@ -10,6 +10,7 @@ goal = (0, 0)
 robot_size = 1
 
 
+
 def getPathLength(path):
     length = 0
     for i in range(1, len(path)):
