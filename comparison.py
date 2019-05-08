@@ -47,6 +47,22 @@ def getMetrics(map):
     prm_len_1000, prm_time_1000, failures_1000 = getPRMValues(map, 1000)
     return [getPathLength(vrm_path), (time2-time1), prm_len_500, prm_time_500, failures_500, prm_len_800, prm_time_800, failures_800, prm_len_1000, prm_time_1000, failures_1000]
 
+def autolabel(rects, axes, xpos='center'):
+    """
+    Attach a text label above each bar in *rects*, displaying its height.
+
+    *xpos* indicates which side to place the text w.r.t. the center of
+    the bar. It can be one of the following {'center', 'right', 'left'}.
+    """
+
+    xpos = xpos.lower()  # normalize the case of the parameter
+    ha = {'center': 'center', 'right': 'left', 'left': 'right'}
+    offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
+
+    for rect in rects:
+        height = round(rect.get_height(), 2)
+        axes.text(rect.get_x() + rect.get_width()*offset[xpos], 1.01*height,
+                '{}'.format(height), ha=ha[xpos], va='bottom')
 
 def makePlots(data, name):
     labels = ['500 Samples', '800 Samples', '1000 Samples']
@@ -55,20 +71,29 @@ def makePlots(data, name):
     times = [data[3], data[6], data[9]]
     failures = [data[4], data[7], data[10]]
 
-    plot1 = plt.bar([0, 1, 2], lengths, 0.25, alpha=0.5,
+    fig,ax1 = plt.subplots()
+
+    ax2 = ax1.twinx()
+
+    plot1 = ax1.bar([0, 1, 2], lengths, 0.25, alpha=0.5,
                     color='b', label='Path Length')
-    plot2 = plt.bar([0.25, 1.25, 2.25], times, 0.25,
+    plot2 = ax2.bar([0.25, 1.25, 2.25], times, 0.25,
                     alpha=0.5, color='g', label='Runtime')
-    plot3 = plt.bar([0.5, 1.5, 2.5], failures, 0.25, alpha=0.5,
+    plot3 = ax1.bar([0.5, 1.5, 2.5], failures, 0.25, alpha=0.5,
                     color='r', label='Percent Failure')
-    plot4 = plt.hlines(data[0], xmin=0, xmax=3, color='b', linestyles={
+    plot4 = ax1.hlines(data[0], xmin=0, xmax=3, color='b', linestyles={
                        'dashed'}, label='Voronoi Path Length')
-    plot5 = plt.hlines(data[1], xmin=0, xmax=3, color='g', linestyles={
+    plot5 = ax2.hlines(data[1], xmin=0, xmax=3, color='g', linestyles={
                        'dashed'}, label='Voronoi Runtime')
 
+    autolabel(plot1, ax1)
+    autolabel(plot2, ax2)
+    autolabel(plot3, ax1)
     plt.title(name)
+    ax1.set_ylabel('Path length')
+    ax2.set_ylabel('Runtime')
     plt.xticks([0.375, 1.375, 2.375], labels)
-    plt.legend()
+    fig.legend()
     plt.show()
 
 
@@ -169,5 +194,5 @@ if __name__ == '__main__':
     obstacle_list_y.append(oy)
     names = ["Wide Corridoors", "Easy Obstacles", "Narrow Corridoors", "Difficult Obstacles"]
     for i in range(len(obstacle_list_x)):
-        data = getMetrics([obstacle_list_x[2], obstacle_list_y[2]])
+        data = getMetrics([obstacle_list_x[i], obstacle_list_y[i]])
         makePlots(data, names[i])

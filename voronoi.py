@@ -9,7 +9,7 @@ from itertools import product
 N_KNN = 10  # number of edge from one sampled point
 MAX_EDGE_LEN = 30.0  # [m] Maximum edge length
 
-show_animation = True
+show_animation = False
 
 
 class Node:
